@@ -1,4 +1,4 @@
-/*
+﻿/*
     forest-shared-resources / verse
 
     The single source of truth for UEFN (Verse) identifier rules and
@@ -15,7 +15,7 @@
     tests.
 */
 
-import rules from '../contracts/verse-rules.json';
+import rules from '../../contracts/verse-rules.json';
 
 export { rules };
 

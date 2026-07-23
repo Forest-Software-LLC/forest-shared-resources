@@ -1,4 +1,4 @@
-/*
+﻿/*
     forest-shared-resources / licenses
 
     License safety knowledge for the forestpm registry: the SPDX allow-list,
@@ -15,7 +15,7 @@
     legal advice.
 */
 
-import data from '../contracts/licenses.json';
+import data from '../../contracts/licenses.json';
 
 export type LicenseRating = 'safe' | 'caution' | 'unsafe' | 'pending' | 'unknown';
 

@@ -12,12 +12,16 @@ contracts/          Language-neutral JSON: the actual contracts.
   licenses.json              SPDX allow-list, ratings + caveats, text fingerprints
   licenses.vectors.json      Rating + inference vectors
 
-verse/              TypeScript modules wrapping the contracts for TS/Node consumers.
-licenses/
-index.ts            Aggregate entry (also deep-importable: .../verse, .../licenses)
+src/                TypeScript modules wrapping the contracts for TS/Node consumers.
+  index.ts                   Aggregate entry
+  verse/index.ts             Deep-importable as forest-shared-resources/verse
+  licenses/index.ts          Deep-importable as forest-shared-resources/licenses
+
+tests/              Vector assertions against the built output.
+dist/               Build output (gitignored; created by the prepare script).
 ```
 
-Authored in TypeScript with no committed build artifacts: the `prepare` script runs `tsc` automatically when npm installs this package as a git dependency. If a consumer's build environment ever proves unable to run `prepare`, the fallback is committing the build output; note it here if that day comes.
+Authored in TypeScript with no committed build artifacts: the `prepare` script runs `tsc` automatically when npm installs this package as a git dependency, emitting to `dist/` (gitignored; only `dist/` and `contracts/` ship in the pack). The `exports` map serves runtime resolution and `typesVersions` serves consumers on classic node10 module resolution. If a consumer's build environment ever proves unable to run `prepare`, the fallback is committing the build output; note it here if that day comes.
 
 ## Charter: what belongs here (and what doesn't)
 

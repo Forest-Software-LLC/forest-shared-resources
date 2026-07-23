@@ -1,11 +1,11 @@
-const test = require('node:test');
+﻿const test = require('node:test');
 const assert = require('node:assert/strict');
 const {
     SPDX_LICENSES,
     LICENSE_RATINGS,
     getStaticRating,
     inferLicenseFromText,
-} = require('./index.js');
+} = require('../dist/src/licenses/index.js');
 const vectors = require('../contracts/licenses.vectors.json');
 
 test('every allowed SPDX id has a ratings entry', () => {

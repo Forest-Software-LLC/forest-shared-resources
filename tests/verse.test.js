@@ -1,11 +1,11 @@
-const test = require('node:test');
+﻿const test = require('node:test');
 const assert = require('node:assert/strict');
 const {
     UEFN_NAME_REGEX,
     validateUefnPackageName,
     mapScopeToVerseIdentifier,
     isReservedSlug,
-} = require('./index.js');
+} = require('../dist/src/verse/index.js');
 const vectors = require('../contracts/verse-rules.vectors.json');
 
 test('scope mapping vectors', () => {

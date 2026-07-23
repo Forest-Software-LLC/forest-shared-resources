@@ -1,14 +1,23 @@
 {
   "name": "forest-shared-resources",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared contracts and definitions for the forestpm ecosystem (forest-backend, forest-trust-gateway, forest-cli). Data-first: contracts/ holds language-neutral JSON; TypeScript modules wrap them for TS/Node consumers.",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "files": ["index.js", "index.d.ts", "verse/", "licenses/", "contracts/"],
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "files": ["dist/", "contracts/*.json"],
+  "exports": {
+    ".": "./dist/src/index.js",
+    "./*": "./dist/src/*/index.js",
+    "./contracts/*": "./contracts/*",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": { "*": ["dist/src/*/index.d.ts"] }
+  },
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "test": "npm run build && node --test verse/test.js licenses/test.js"
+    "test": "npm run build && node --test tests/verse.test.js tests/licenses.test.js"
   },
   "devDependencies": {
     "typescript": "^5.5.0"

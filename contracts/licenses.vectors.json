@@ -1,0 +1,33 @@
+{
+  "comment": "Canonical cross-language test vectors for the licenses contract. Inference vectors are order-sensitive on purpose (AGPL text also mentions the GPL; BSD-3 text also satisfies BSD-2).",
+  "ratingLookups": [
+    ["MIT", "safe"],
+    ["0BSD", "safe"],
+    ["Apache-2.0", "safe"],
+    ["MPL-2.0", "caution"],
+    ["CC-BY-SA-4.0", "caution"],
+    ["LGPL-2.1", "caution"],
+    ["GPL-3.0", "unsafe"],
+    ["AGPL-3.0", "unsafe"],
+    ["NotARealLicense", "unknown"]
+  ],
+  "inference": [
+    ["GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007. Under the terms of the GNU General Public License as published.", "AGPL-3.0"],
+    ["GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007", "LGPL-3.0"],
+    ["GNU Lesser General Public License, version 2.1, February 1999", "LGPL-2.1"],
+    ["GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007", "GPL-3.0"],
+    ["GNU GENERAL PUBLIC LICENSE Version 2, June 1991", "GPL-2.0"],
+    ["Mozilla Public License Version 2.0", "MPL-2.0"],
+    ["Eclipse Public License - v 2.0", "EPL-2.0"],
+    ["COMMON DEVELOPMENT AND DISTRIBUTION LICENSE (CDDL) Version 1.0", "CDDL-1.0"],
+    ["Apache License Version 2.0, January 2004", "Apache-2.0"],
+    ["Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files", "MIT"],
+    ["The MIT\n   License applies to this project.", "MIT"],
+    ["Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted", "ISC"],
+    ["This is free and unencumbered software released into the public domain.", "Unlicense"],
+    ["The origin of this software must not be misrepresented. Altered source versions must be plainly marked as such.", "Zlib"],
+    ["Redistribution and use in source and binary forms, with or without modification, are permitted. Neither the name of the copyright holder nor the names of its contributors may be used.", "BSD-3-Clause"],
+    ["Redistribution and use in source and binary forms, with or without modification, are permitted.", "BSD-2-Clause"],
+    ["This is a completely custom license with novel terms.", null]
+  ]
+}

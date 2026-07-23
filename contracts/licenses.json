@@ -1,0 +1,85 @@
+{
+  "contractVersion": 1,
+  "comment": "License safety knowledge for the forestpm registry, in the context of closed-source commercial games (forest's primary audience). All user-facing copy must present ratings as automated review, not legal advice.",
+  "spdxLicenses": [
+    "MIT", "Apache-2.0", "GPL-3.0", "GPL-2.0", "MPL-2.0", "ISC", "Unlicense",
+    "BSD-2-Clause", "BSD-3-Clause", "LGPL-3.0", "LGPL-2.1", "AGPL-3.0",
+    "EPL-2.0", "CDDL-1.0", "Zlib", "0BSD", "CC-BY-SA-4.0"
+  ],
+  "ratings": {
+    "MIT": { "rating": "safe", "caveats": [] },
+    "ISC": { "rating": "safe", "caveats": [] },
+    "Unlicense": { "rating": "safe", "caveats": [] },
+    "0BSD": { "rating": "safe", "caveats": [] },
+    "CC-BY-SA-4.0": {
+      "rating": "caution",
+      "caveats": ["Share-alike: adaptations of the licensed material must be shared under the same license, and attribution is required. Written for creative works rather than code — its obligations in a bundled game are legally untested."]
+    },
+    "Zlib": {
+      "rating": "safe",
+      "caveats": ["Modified versions must be clearly marked as changed."]
+    },
+    "BSD-2-Clause": {
+      "rating": "safe",
+      "caveats": ["The copyright notice must be preserved in copies."]
+    },
+    "BSD-3-Clause": {
+      "rating": "safe",
+      "caveats": ["The copyright notice must be preserved in copies. The author's name may not be used to promote your product."]
+    },
+    "Apache-2.0": {
+      "rating": "safe",
+      "caveats": ["Modified files must carry a notice of changes. If the package ships a NOTICE file, its attributions must be preserved."]
+    },
+    "MPL-2.0": {
+      "rating": "caution",
+      "caveats": ["File-level copyleft: if you modify this package's own source files, those modified files must be made available under MPL-2.0. Using it unmodified in a closed-source game is fine."]
+    },
+    "EPL-2.0": {
+      "rating": "caution",
+      "caveats": ["Weak copyleft: modifications to the package itself must be published under EPL-2.0. Using it unmodified is generally fine."]
+    },
+    "CDDL-1.0": {
+      "rating": "caution",
+      "caveats": ["File-level copyleft: modified source files must remain under CDDL. Using it unmodified is generally fine."]
+    },
+    "LGPL-3.0": {
+      "rating": "caution",
+      "caveats": ["LGPL assumes users can swap out the library. In a bundled Roblox game that boundary is murky — modifying the package creates source obligations, and even unmodified use is legally untested in this context."]
+    },
+    "LGPL-2.1": {
+      "rating": "caution",
+      "caveats": ["LGPL assumes users can swap out the library. In a bundled Roblox game that boundary is murky — modifying the package creates source obligations, and even unmodified use is legally untested in this context."]
+    },
+    "GPL-3.0": {
+      "rating": "unsafe",
+      "caveats": ["Strong copyleft: shipping this in your game plausibly requires releasing your game's entire source under GPL-3.0. Not recommended for closed-source projects."]
+    },
+    "GPL-2.0": {
+      "rating": "unsafe",
+      "caveats": ["Strong copyleft: shipping this in your game plausibly requires releasing your game's entire source under GPL-2.0. Not recommended for closed-source projects."]
+    },
+    "AGPL-3.0": {
+      "rating": "unsafe",
+      "caveats": ["Strongest copyleft: even network use counts as distribution, so running this in a live game plausibly requires releasing your game's entire source under AGPL-3.0. Not recommended for closed-source projects."]
+    }
+  },
+  "textFingerprintsComment": "Deterministic license-text identification. Evaluate IN ORDER against text normalized to lowercase with all whitespace runs collapsed to single spaces; a rule matches when every allOf substring is present AND (anyOf is absent or at least one anyOf substring is present). First match wins; no match = null. Order matters: AGPL/LGPL texts contain 'general public license', so the specific ones come first; BSD-3 precedes BSD-2 as its stricter superset.",
+  "textFingerprints": [
+    { "id": "AGPL-3.0", "allOf": ["affero general public license", "version 3"] },
+    { "id": "LGPL-3.0", "allOf": ["lesser general public license", "version 3"] },
+    { "id": "LGPL-2.1", "allOf": ["lesser general public license", "version 2.1"] },
+    { "id": "GPL-3.0", "allOf": ["gnu general public license", "version 3"] },
+    { "id": "GPL-2.0", "allOf": ["gnu general public license", "version 2"] },
+    { "id": "MPL-2.0", "allOf": ["mozilla public license", "2.0"] },
+    { "id": "EPL-2.0", "allOf": ["eclipse public license"], "anyOf": ["v 2.0", "version 2.0"] },
+    { "id": "CDDL-1.0", "allOf": ["common development and distribution license"] },
+    { "id": "Apache-2.0", "allOf": ["apache license", "version 2.0"] },
+    { "id": "MIT", "anyOf": ["mit license", "permission is hereby granted, free of charge, to any person obtaining a copy"] },
+    { "id": "ISC", "anyOf": ["isc license", "permission to use, copy, modify, and/or distribute this software for any purpose with or without fee"] },
+    { "id": "Unlicense", "anyOf": ["the unlicense", "this is free and unencumbered software released into the public domain"] },
+    { "id": "Zlib", "allOf": ["the origin of this software must not be misrepresented", "altered source versions must be plainly marked"] },
+    { "id": "BSD-3-Clause", "allOf": ["redistribution and use in source and binary forms"], "anyOf": ["neither the name", "3-clause"] },
+    { "id": "BSD-2-Clause", "allOf": ["redistribution and use in source and binary forms"] }
+  ]
+}

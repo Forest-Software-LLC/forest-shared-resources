@@ -1,0 +1,17 @@
+{
+  "contractVersion": 1,
+  "uefn": {
+    "reservedWords": [
+      "module", "class", "struct", "enum", "interface", "using",
+      "if", "else", "then", "for", "loop", "break", "return", "do",
+      "case", "of", "var", "set", "map", "array", "option", "logic",
+      "int", "float", "string", "char", "true", "false", "self",
+      "block", "spawn", "sync", "race", "rush", "branch", "defer",
+      "profile", "where", "and", "or", "not", "void", "any",
+      "comparable", "tuple", "type", "external", "until"
+    ],
+    "epicPathRoots": ["/Verse.org", "/Fortnite.com", "/UnrealEngine.com"],
+    "packagesMount": "ForestPackages",
+    "receiptFileName": ".forest-receipt"
+  }
+}

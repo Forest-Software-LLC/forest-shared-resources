@@ -1,0 +1,16 @@
+{
+  "comment": "Canonical cross-language test vectors. Every consumer (forest-backend, forest-trust-gateway, forest-cli) asserts its implementation against these; a failure means an implementation has drifted from the contract.",
+  "scopeMapping": [
+    ["cool-studio", "cool_studio"],
+    ["a-b-c", "a_b_c"],
+    ["123-team", "_123_team"],
+    ["7up", "_7up"],
+    ["module", "_module"],
+    ["set", "_set"],
+    ["alice", "alice"],
+    ["stratiz", "stratiz"]
+  ],
+  "validPackageNames": ["MathUtil", "_private", "A1_b", "x", "NavMeshQuery", "Module", "Set"],
+  "invalidPackageNames": ["nav-mesh", "1thing", "", "a.b", "has space", "a/b"],
+  "reservedPackageNames": ["module", "using", "set", "class", "if"]
+}

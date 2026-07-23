@@ -1,0 +1,9 @@
+# Build output (emitted in place by tsc; built on install via the prepare script)
+/index.js
+/index.d.ts
+/verse/index.js
+/verse/index.d.ts
+/licenses/index.js
+/licenses/index.d.ts
+*.tsbuildinfo
+node_modules/

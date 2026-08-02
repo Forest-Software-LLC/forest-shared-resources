@@ -1,0 +1,9 @@
+{
+    "comment": "User-Agent classification contract for registry usage analytics. forest-cli SENDS the cli prefix on every request; forest-cdn-worker and forest-backend CLASSIFY traffic with these rules. The internal prefix marks forest-backend's own server-side tarball fetches (Code tab), which the download rollup excludes so they never count as downloads. Prefixes match at the START of the User-Agent string; the browser token matches anywhere. Renaming a prefix in one repo without the others silently misclassifies analytics forever, which is why this file exists.",
+    "classes": ["cli", "browser", "internal", "other", "none"],
+    "prefixes": {
+        "cli": "forest-cli/",
+        "internal": "forest-backend/"
+    },
+    "browserToken": "Mozilla/"
+}

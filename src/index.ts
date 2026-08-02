@@ -2,5 +2,6 @@
 //   import { ... } from 'forest-shared-resources/verse'
 import * as verse from './verse/index';
 import * as licenses from './licenses/index';
+import * as userAgents from './user-agents/index';
 
-export { verse, licenses };
+export { verse, licenses, userAgents };

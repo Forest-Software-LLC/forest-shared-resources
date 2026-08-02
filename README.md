@@ -71,6 +71,16 @@ import { SPDX_LICENSES, inferLicenseFromText } from 'forest-shared-resources/lic
 
 All copy shown to users must present ratings as automated review, not legal advice.
 
+### `user-agents`: usage-analytics traffic classification
+
+| Export | What |
+|---|---|
+| `classifyUserAgent(ua)` | Classifies a User-Agent header (or null) as `cli` / `browser` / `internal` / `other` / `none`. forest-cdn-worker and forest-backend run this on every request they record. |
+| `CLI_UA_PREFIX` | `forest-cli/`: forest-cli sends `forest-cli/<version>` on every request. Renaming it orphans all CLI traffic in analytics. |
+| `INTERNAL_UA_PREFIX` | `forest-backend/`: the backend's own server-side tarball fetches (Code tab). The download rollup excludes this class so file views never count as downloads. |
+
+forest-cli vendors `contracts/user-agents.json` via its `shared/` submodule and asserts its `USER_AGENT` constant starts with the cli prefix.
+
 ## Changing a contract
 
 1. Edit the JSON (+ vectors if behavior changes); `npm test`.

@@ -1,0 +1,15 @@
+{
+    "comment": "Canonical cross-language test vectors. Every consumer (forest-backend, forest-cdn-worker, forest-cli) asserts its implementation against these; a failure means an implementation has drifted from the contract. null means the User-Agent header was absent.",
+    "classifications": [
+        ["forest-cli/1.4.2", "cli"],
+        ["forest-cli/0.0.1-beta", "cli"],
+        ["forest-backend/1.0 (+code-tab)", "internal"],
+        ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", "browser"],
+        ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Gecko/20100101 Firefox/128.0", "browser"],
+        ["curl/8.7.1", "other"],
+        ["not-forest-cli/1.0", "other"],
+        ["x forest-backend/1.0", "other"],
+        ["", "none"],
+        [null, "none"]
+    ]
+}

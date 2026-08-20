@@ -1,13 +1,12 @@
 /*
     forest-shared-resources / rbxm / lz4
 
-    Minimal LZ4 raw block decoder for rbxm chunk payloads. Roblox chunks are
-    bare LZ4 blocks (no frame header) with the decompressed size declared in
-    the chunk header, which is exactly the shape this decoder wants.
+    Minimal LZ4 raw block decoder for rbxm chunk payloads. Roblox chunks
+    are bare LZ4 blocks (no frame header) with the decompressed size
+    declared in the chunk header.
 
-    Hand rolled on purpose: the block format is tiny and stable, and this
-    code runs on untrusted uploads, so every read and write is bounds
-    checked and any malformed input throws instead of overrunning.
+    Runs on untrusted uploads: every read and write is bounds checked,
+    malformed input throws.
 */
 
 export class Lz4Error extends Error {}

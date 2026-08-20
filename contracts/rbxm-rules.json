@@ -11,5 +11,9 @@
             "maxChunkDecompressedBytes": 16777216,
             "maxTotalDecompressedBytes": 33554432
         }
+    },
+    "runtimeScripts": {
+        "comment": "Rojo-convention names that sync as Script/LocalScript and execute without being require()d. Matching: lowercase basename endsWith any suffix. The leading dot makes bare server.lua/client.lua exempt by construction. Directories exempt at the caller.",
+        "rejectedSuffixes": [".server.lua", ".server.luau", ".client.lua", ".client.luau"]
     }
 }

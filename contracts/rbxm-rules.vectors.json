@@ -1,5 +1,22 @@
 {
-    "comment": "Test vectors for the rbxm class policy. classPolicy pairs are [className, forbidden].",
+    "comment": "Test vectors for the rbxm class policy and roblox filename rules. classPolicy pairs are [className, forbidden]; runtimeScriptNames pairs are [basename, rejected].",
+    "runtimeScriptNames": [
+        ["attack.server.lua", true],
+        ["attack.server.luau", true],
+        ["attack.client.lua", true],
+        ["attack.client.luau", true],
+        ["init.server.lua", true],
+        ["Attack.Server.Lua", true],
+        ["attack.CLIENT.LUAU", true],
+        ["init.lua", false],
+        ["init.luau", false],
+        ["module.lua", false],
+        ["server.lua", false],
+        ["client.luau", false],
+        ["webserver.lua", false],
+        ["README.md", false],
+        ["LICENSE", false]
+    ],
     "classPolicy": [
         ["Script", true],
         ["LocalScript", true],

@@ -1,0 +1,15 @@
+{
+    "rbxm": {
+        "modelFileExtensions": [".rbxm"],
+        "rejectedModelExtensions": [".rbxmx"],
+        "forbiddenClassNameSuffix": "Script",
+        "minLuauSourceBytesWithModels": 256,
+        "limits": {
+            "maxInstances": 100000,
+            "maxClasses": 2000,
+            "maxClassNameLength": 200,
+            "maxChunkDecompressedBytes": 16777216,
+            "maxTotalDecompressedBytes": 33554432
+        }
+    }
+}

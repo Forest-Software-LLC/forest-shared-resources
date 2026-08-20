@@ -1,0 +1,21 @@
+{
+    "comment": "Test vectors for the rbxm class policy. classPolicy pairs are [className, forbidden].",
+    "classPolicy": [
+        ["Script", true],
+        ["LocalScript", true],
+        ["ModuleScript", true],
+        ["CoreScript", true],
+        ["FutureVariantScript", true],
+        ["Folder", false],
+        ["Part", false],
+        ["MeshPart", false],
+        ["Model", false],
+        ["ScreenGui", false],
+        ["UnionOperation", false],
+        ["Motor6D", false],
+        ["StringValue", false],
+        ["ScriptContext", false],
+        ["Scriptable", false],
+        ["script", false]
+    ]
+}

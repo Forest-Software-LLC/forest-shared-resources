@@ -4,7 +4,10 @@
   "description": "Shared contracts and definitions for the forestpm ecosystem (forest-backend, forest-trust-gateway, forest-cli). Data-first: contracts/ holds language-neutral JSON; TypeScript modules wrap them for TS/Node consumers.",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
-  "files": ["dist/", "contracts/*.json"],
+  "files": [
+    "dist/",
+    "contracts/*.json"
+  ],
   "exports": {
     ".": "./dist/src/index.js",
     "./*": "./dist/src/*/index.js",
@@ -12,19 +15,27 @@
     "./package.json": "./package.json"
   },
   "typesVersions": {
-    "*": { "*": ["dist/src/*/index.d.ts"] }
+    "*": {
+      "*": [
+        "dist/src/*/index.d.ts"
+      ]
+    }
   },
   "scripts": {
     "build": "tsc",
     "prepare": "npm run build",
-    "test": "npm run build && node --test tests/verse.test.js tests/licenses.test.js tests/user-agents.test.js"
+    "test": "npm run build && node --test tests/verse.test.js tests/licenses.test.js tests/user-agents.test.js tests/rbxm.test.js"
   },
   "devDependencies": {
+    "@types/node": "^22.20.1",
     "typescript": "^5.5.0"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Forest-Software-LLC/forest-shared-resources.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "fzstd": "^0.1.1"
+  }
 }

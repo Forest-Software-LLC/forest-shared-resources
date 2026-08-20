@@ -1,35 +1,45 @@
 /*
     forest-shared-resources / rbxm
 
-    Scanner for Roblox binary model files (.rbxm), shared by
-    forest-trust-gateway (publish enforcement) and forest-backend (wally
-    mirror scan, retro sweep). Format reference: dom.rojo.space/binary.
+    Roblox package rules and the rbxm binary scanner, used by the forest
+    registry's publish validation. Format reference: dom.rojo.space/binary.
 
-    This is deliberately not a full DOM reader. Enforcement needs the class
-    census (INST) and the parent structure (PRNT); property payloads are
-    length-skipped without decompression, which also sidesteps decompression
-    bombs for the bulk of the file. Everything is fail closed: unknown
-    chunks, truncation, count mismatches, or undecodable compression reject
-    the file rather than passing it through.
+    scanRbxm is the enforcement path: class census (INST) and parent
+    structure (PRNT) only, property payloads length-skipped without
+    decompression. Fail closed: unknown chunks, truncation, count
+    mismatches, or undecodable compression reject the file.
 
-    scanRbxm parses and reports; checkRbxmPolicy applies forest's rules
-    (no script classes, no services, exactly one root instance). The split
-    keeps the parser reusable for read paths like the Code tab tree view.
+    checkRbxmPolicy applies the registry rules (no script classes, no
+    services, exactly one root instance). isRuntimeScriptName applies the
+    filename rule from the shared contract. parseRbxmDom (dom.ts) is the
+    tolerant read path for rendering.
 */
 
-import { decompress as zstdDecompress } from 'fzstd';
-import { decodeLz4Block } from './lz4';
+import {
+    Reader,
+    RbxmParseError,
+    fail,
+    toBuffer,
+    readFileHeader,
+    readChunkHeader,
+    readReferentArray,
+    decompressChunk,
+    END_CONTENT,
+} from './binary';
 import contract from '../../contracts/rbxm-rules.json';
 
 const rules = contract.rbxm;
+
+export { RbxmParseError };
+export { parseRbxmDom, collectAssetRefs } from './dom';
+export type { RbxmDom, RbxmDomInstance, RbxmValue, RbxmAssetRef } from './dom';
 
 export const MODEL_FILE_EXTENSIONS: readonly string[] = Object.freeze([...rules.modelFileExtensions]);
 export const REJECTED_MODEL_EXTENSIONS: readonly string[] = Object.freeze([...rules.rejectedModelExtensions]);
 export const FORBIDDEN_CLASS_NAME_SUFFIX: string = rules.forbiddenClassNameSuffix;
 export const MIN_LUAU_SOURCE_BYTES_WITH_MODELS: number = rules.minLuauSourceBytesWithModels;
 export const RBXM_LIMITS = Object.freeze({ ...rules.limits });
-
-export class RbxmParseError extends Error {}
+export const RUNTIME_SCRIPT_SUFFIXES: readonly string[] = Object.freeze([...contract.runtimeScripts.rejectedSuffixes]);
 
 export interface RbxmClassEntry {
     className: string;
@@ -48,116 +58,19 @@ export function isForbiddenClassName(className: string): boolean {
     return className.endsWith(FORBIDDEN_CLASS_NAME_SUFFIX);
 }
 
-// --- binary primitives -------------------------------------------------------
-
-const MAGIC = Buffer.from('<roblox!', 'ascii');
-const SIGNATURE = Buffer.from([0x89, 0xff, 0x0d, 0x0a, 0x1a, 0x0a]);
-const END_CONTENT = Buffer.from('</roblox>', 'ascii');
-const ZSTD_MAGIC = Buffer.from([0x28, 0xb5, 0x2f, 0xfd]);
-
-function fail(message: string): never {
-    throw new RbxmParseError(message);
-}
-
-class Reader {
-    constructor(private readonly buf: Buffer, public pos = 0) {}
-
-    get remaining(): number {
-        return this.buf.length - this.pos;
-    }
-
-    bytes(n: number): Buffer {
-        if (n < 0 || this.pos + n > this.buf.length) fail('unexpected end of data');
-        const out = this.buf.subarray(this.pos, this.pos + n);
-        this.pos += n;
-        return out;
-    }
-
-    u8(): number {
-        return this.bytes(1)[0];
-    }
-
-    u16(): number {
-        return this.bytes(2).readUInt16LE(0);
-    }
-
-    u32(): number {
-        return this.bytes(4).readUInt32LE(0);
-    }
-
-    i32(): number {
-        return this.bytes(4).readInt32LE(0);
-    }
-
-    string(maxLength: number): string {
-        const len = this.u32();
-        if (len > maxLength) fail(`string length ${len} exceeds limit ${maxLength}`);
-        return this.bytes(len).toString('utf8');
-    }
-}
-
 /**
- * Referent arrays store interleaved big-endian i32s (byte 0 of every value,
- * then byte 1 of every value, ...), each zigzag transformed, and referent
- * semantics additionally accumulate deltas.
+ * Filename rule from the shared contract: Rojo-convention runtime-script
+ * names. Case-insensitive; bare server.lua/client.lua exempt by
+ * construction (the suffixes carry a leading dot). Pass a basename.
  */
-function readReferentArray(reader: Reader, count: number): number[] {
-    const raw = reader.bytes(count * 4);
-    const values: number[] = new Array(count);
-    let acc = 0;
-    for (let i = 0; i < count; i++) {
-        const transformed =
-            ((raw[i] << 24) | (raw[count + i] << 16) | (raw[2 * count + i] << 8) | raw[3 * count + i]) | 0;
-        const delta = (transformed >>> 1) ^ -(transformed & 1);
-        acc = (acc + delta) | 0;
-        values[i] = acc;
-    }
-    return values;
-}
-
-// --- chunk walk --------------------------------------------------------------
-
-interface ChunkHeader {
-    name: string;
-    compressedLength: number;
-    uncompressedLength: number;
-}
-
-function decompressChunk(header: ChunkHeader, payload: Buffer): Buffer {
-    if (header.compressedLength === 0) {
-        return payload;
-    }
-    let out: Uint8Array;
-    if (payload.length >= 4 && payload.subarray(0, 4).equals(ZSTD_MAGIC)) {
-        try {
-            out = zstdDecompress(payload, new Uint8Array(header.uncompressedLength));
-        } catch (err) {
-            fail(`${header.name} chunk: zstd decompression failed (${(err as Error).message})`);
-        }
-    } else {
-        try {
-            out = decodeLz4Block(payload, header.uncompressedLength);
-        } catch (err) {
-            fail(`${header.name} chunk: lz4 decompression failed (${(err as Error).message})`);
-        }
-    }
-    if (out.length !== header.uncompressedLength) {
-        fail(`${header.name} chunk: decompressed size mismatch`);
-    }
-    return Buffer.from(out.buffer, out.byteOffset, out.length);
+export function isRuntimeScriptName(basename: string): boolean {
+    const lower = basename.toLowerCase();
+    return RUNTIME_SCRIPT_SUFFIXES.some(suffix => lower.endsWith(suffix));
 }
 
 export function scanRbxm(data: Uint8Array): RbxmScan {
-    const buf = Buffer.isBuffer(data) ? data : Buffer.from(data.buffer, data.byteOffset, data.byteLength);
-    const reader = new Reader(buf);
-
-    if (!reader.bytes(MAGIC.length).equals(MAGIC)) fail('not an rbxm file (bad magic)');
-    if (!reader.bytes(SIGNATURE.length).equals(SIGNATURE)) fail('not an rbxm file (bad signature)');
-    const version = reader.u16();
-    if (version !== 0) fail(`unsupported rbxm version ${version}`);
-    const declaredClassCount = reader.i32();
-    const declaredInstanceCount = reader.i32();
-    reader.bytes(8); // reserved
+    const reader = new Reader(toBuffer(data));
+    const { declaredClassCount, declaredInstanceCount } = readFileHeader(reader);
 
     if (declaredClassCount < 0 || declaredClassCount > rules.limits.maxClasses) {
         fail(`class count ${declaredClassCount} outside allowed range`);
@@ -176,21 +89,17 @@ export function scanRbxm(data: Uint8Array): RbxmScan {
 
     while (!sawEnd) {
         if (reader.remaining === 0) fail('missing END chunk');
-        const name = reader.bytes(4).toString('latin1');
-        const compressedLength = reader.u32();
-        const uncompressedLength = reader.u32();
-        reader.bytes(4); // reserved
-        const header: ChunkHeader = { name: name.replace(/\0+$/, ''), compressedLength, uncompressedLength };
+        const header = readChunkHeader(reader);
 
-        if (uncompressedLength > rules.limits.maxChunkDecompressedBytes) {
-            fail(`${header.name} chunk declares ${uncompressedLength} bytes, over the per-chunk limit`);
+        if (header.uncompressedLength > rules.limits.maxChunkDecompressedBytes) {
+            fail(`${header.name} chunk declares ${header.uncompressedLength} bytes, over the per-chunk limit`);
         }
-        const payloadLength = compressedLength === 0 ? uncompressedLength : compressedLength;
+        const payloadLength = header.compressedLength === 0 ? header.uncompressedLength : header.compressedLength;
         const payload = reader.bytes(payloadLength);
 
         switch (header.name) {
             case 'END': {
-                if (compressedLength !== 0 || !payload.equals(END_CONTENT)) {
+                if (header.compressedLength !== 0 || !payload.equals(END_CONTENT)) {
                     fail('malformed END chunk');
                 }
                 sawEnd = true;
@@ -199,11 +108,11 @@ export function scanRbxm(data: Uint8Array): RbxmScan {
             case 'META':
             case 'SSTR':
             case 'PROP':
-                // Length-skipped without decompression; nothing enforced here
-                // needs their contents
+                // Length-skipped without decompression; contents not needed
+                // for enforcement
                 break;
             case 'INST': {
-                totalDecompressed += uncompressedLength;
+                totalDecompressed += header.uncompressedLength;
                 if (totalDecompressed > rules.limits.maxTotalDecompressedBytes) {
                     fail('total decompressed size exceeds limit');
                 }
@@ -229,7 +138,7 @@ export function scanRbxm(data: Uint8Array): RbxmScan {
                 break;
             }
             case 'PRNT': {
-                totalDecompressed += uncompressedLength;
+                totalDecompressed += header.uncompressedLength;
                 if (totalDecompressed > rules.limits.maxTotalDecompressedBytes) {
                     fail('total decompressed size exceeds limit');
                 }
@@ -276,8 +185,8 @@ export function scanRbxm(data: Uint8Array): RbxmScan {
         }
     }
 
-    // Walk every instance to a root so parent cycles cannot hide subtrees
-    // from tools that traverse top-down
+    // Walk every instance to a root; parent cycles must not hide subtrees
+    // from top-down traversal
     const reachesRoot = new Set<number>();
     for (const start of parentOf.keys()) {
         const trail = new Set<number>();
@@ -296,8 +205,8 @@ export function scanRbxm(data: Uint8Array): RbxmScan {
 // --- forest policy -----------------------------------------------------------
 
 /**
- * Forest's rules for a model file that has already parsed cleanly. Returns
- * author-facing error messages; empty array means the file is acceptable.
+ * Registry rules for a cleanly parsed model file. Author-facing error
+ * messages; empty means acceptable.
  */
 export function checkRbxmPolicy(scan: RbxmScan, fileName: string): string[] {
     const errors: string[] = [];

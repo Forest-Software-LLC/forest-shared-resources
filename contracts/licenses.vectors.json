@@ -1,5 +1,5 @@
 {
-  "comment": "Canonical cross-language test vectors for the licenses contract. Inference vectors are order-sensitive on purpose (AGPL text also mentions the GPL; BSD-3 text also satisfies BSD-2).",
+  "comment": "Canonical cross-language test vectors for the licenses contract. Inference vectors are order-sensitive on purpose: licenses that name other licenses in their own body (MPL-2.0 and EPL-2.0 name the GNU family as Secondary Licenses, GPL-3.0 section 13 names the AGPL, the SPDX LGPL-3.0 text appends the whole GPL-3.0 text) must not be identified as the license they merely mention, and supersets follow the license they contain (BSD-3 before BSD-2, ISC before 0BSD). The trailing vectors are excerpts of the real SPDX texts carrying exactly those traps; the full texts of all 17 allowed ids were checked against this table.",
   "ratingLookups": [
     ["MIT", "safe"],
     ["0BSD", "safe"],
@@ -23,11 +23,18 @@
     ["Apache License Version 2.0, January 2004", "Apache-2.0"],
     ["Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files", "MIT"],
     ["The MIT\n   License applies to this project.", "MIT"],
-    ["Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted", "ISC"],
+    ["ISC License\n\nPermission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.", "ISC"],
     ["This is free and unencumbered software released into the public domain.", "Unlicense"],
     ["The origin of this software must not be misrepresented. Altered source versions must be plainly marked as such.", "Zlib"],
     ["Redistribution and use in source and binary forms, with or without modification, are permitted. Neither the name of the copyright holder nor the names of its contributors may be used.", "BSD-3-Clause"],
     ["Redistribution and use in source and binary forms, with or without modification, are permitted.", "BSD-2-Clause"],
-    ["This is a completely custom license with novel terms.", null]
+    ["Creative Commons Attribution-ShareAlike 4.0 International Public License", "CC-BY-SA-4.0"],
+    ["Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES.", "0BSD"],
+    ["This is a completely custom license with novel terms.", null],
+    ["Mozilla Public License Version 2.0\n\n1.12. \"Secondary License\" means either the GNU General Public License, Version 2.0, the GNU Lesser General Public License, Version 2.1, the GNU Affero General Public License, Version 3.0, or any later versions of those licenses.", "MPL-2.0"],
+    ["Eclipse Public License - v 2.0\n\n\"Secondary License\" means either the GNU General Public License, Version 2.0, or any later versions of that license, including any exceptions or additional permissions as identified by the initial Contributor.", "EPL-2.0"],
+    ["GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\n13. Use with the GNU Affero General Public License. Notwithstanding any other provision of this License, you have permission to link or combine any covered work with a work licensed under version 3 of the GNU Affero General Public License into a single combined work.", "GPL-3.0"],
+    ["GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007\n\nThis version of the GNU Lesser General Public License incorporates the terms and conditions of version 3 of the GNU General Public License.\n\nGNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007", "LGPL-3.0"],
+    ["Licensed under the GNU Affero General Public License v3.", "AGPL-3.0"]
   ]
 }
